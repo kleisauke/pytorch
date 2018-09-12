@@ -17,7 +17,7 @@ if (NOT BUILD_ATEN_MOBILE)
   ${PYCMD} ${CMAKE_CURRENT_SOURCE_DIR}/contrib/aten/gen_op.py
     --aten_root=${CMAKE_CURRENT_SOURCE_DIR}/../aten
     --template_dir=${CMAKE_CURRENT_SOURCE_DIR}/contrib/aten
-    --yaml_dir=${CMAKE_CURRENT_BINARY_DIR}/../aten/src/ATen
+    --yaml_dir=${CMAKE_BINARY_DIR}/aten/src/ATen
     --install_dir=${CMAKE_CURRENT_BINARY_DIR}/contrib/aten
   DEPENDS
   ATEN_CPU_FILES_GEN_TARGET
@@ -505,7 +505,7 @@ if (BUILD_PYTHON)
   # so it needs an rpath to find libcaffe2
   set_target_properties(
       caffe2_pybind11_state PROPERTIES LIBRARY_OUTPUT_DIRECTORY
-      ${CMAKE_BINARY_DIR}/caffe2/python)
+      ${CMAKE_CURRENT_BINARY_DIR}/python)
   install(TARGETS caffe2_pybind11_state DESTINATION "${PYTHON_LIB_REL_PATH}/caffe2/python")
   set_target_properties(caffe2_pybind11_state PROPERTIES INSTALL_RPATH "${caffe2_pybind11_rpath}")
 
@@ -528,7 +528,7 @@ if (BUILD_PYTHON)
     # Install with same rpath as non-gpu caffe2_pybind11_state
     set_target_properties(
         caffe2_pybind11_state_gpu PROPERTIES LIBRARY_OUTPUT_DIRECTORY
-        ${CMAKE_BINARY_DIR}/caffe2/python)
+        ${CMAKE_CURRENT_BINARY_DIR}/python)
     install(TARGETS caffe2_pybind11_state_gpu DESTINATION "${PYTHON_LIB_REL_PATH}/caffe2/python")
     set_target_properties(caffe2_pybind11_state_gpu PROPERTIES INSTALL_RPATH "${caffe2_pybind11_rpath}")
   endif()
@@ -553,7 +553,7 @@ if (BUILD_PYTHON)
     # Install with same rpath as non-hip caffe2_pybind11_state
     set_target_properties(
         caffe2_pybind11_state_hip PROPERTIES LIBRARY_OUTPUT_DIRECTORY
-        ${CMAKE_BINARY_DIR}/caffe2/python)
+        ${CMAKE_CURRENT_BINARY_DIR}/python)
     install(TARGETS caffe2_pybind11_state_hip DESTINATION "${PYTHON_LIB_REL_PATH}/caffe2/python")
     set_target_properties(caffe2_pybind11_state_hip PROPERTIES INSTALL_RPATH "${caffe2_pybind11_rpath}")
   endif()
@@ -568,14 +568,14 @@ if (BUILD_PYTHON)
         TARGET windows_python_copy_lib POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy
         $<TARGET_FILE:caffe2_pybind11_state>
-        ${CMAKE_BINARY_DIR}/caffe2/python)
+        ${CMAKE_CURRENT_BINARY_DIR}/python)
     if (USE_CUDA)
       add_dependencies(windows_python_copy_lib caffe2_pybind11_state_gpu)
       add_custom_command(
           TARGET windows_python_copy_lib POST_BUILD
           COMMAND ${CMAKE_COMMAND} -E copy
           $<TARGET_FILE:caffe2_pybind11_state_gpu>
-          ${CMAKE_BINARY_DIR}/caffe2/python)
+          ${CMAKE_CURRENT_BINARY_DIR}/python)
     endif()
     if (USE_ROCM)
       add_dependencies(windows_python_copy_lib caffe2_pybind11_state_hip)
@@ -583,7 +583,7 @@ if (BUILD_PYTHON)
           TARGET windows_python_copy_lib POST_BUILD
           COMMAND ${CMAKE_COMMAND} -E copy
           $<TARGET_FILE:caffe2_pybind11_state_hip>
-          ${CMAKE_BINARY_DIR}/caffe2/python)
+          ${CMAKE_CURRENT_BINARY_DIR}/python)
     endif()
   endif()
 
@@ -607,7 +607,7 @@ if (BUILD_PYTHON)
       # get_filename_component(name_we ${python_src} NAME_WE)
       add_custom_target(python_copy_files_${name_hash}
           COMMAND ${CMAKE_COMMAND} -E copy
-          ${PROJECT_SOURCE_DIR}/${python_src} ${CMAKE_BINARY_DIR}/${dir})
+          ${PROJECT_SOURCE_DIR}/${python_src} ${CMAKE_CURRENT_BINARY_DIR}/../${dir})
       add_dependencies(python_copy_files python_copy_files_${name_hash})
     endforeach()
   else()
@@ -616,19 +616,19 @@ if (BUILD_PYTHON)
       add_custom_command(
           TARGET python_copy_files PRE_BUILD
           COMMAND ${CMAKE_COMMAND} -E copy
-          ${PROJECT_SOURCE_DIR}/${python_src} ${CMAKE_BINARY_DIR}/${dir})
+          ${PROJECT_SOURCE_DIR}/${python_src} ${CMAKE_CURRENT_BINARY_DIR}/../${dir})
     endforeach()
   endif()
 
   # Install commands
   # Pick up static python files
-  install(DIRECTORY ${CMAKE_BINARY_DIR}/caffe2 DESTINATION ${PYTHON_LIB_REL_PATH}
+  install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} DESTINATION ${PYTHON_LIB_REL_PATH}
           FILES_MATCHING PATTERN "*.py")
   # Caffe proto files
-  install(DIRECTORY ${CMAKE_BINARY_DIR}/caffe DESTINATION ${PYTHON_LIB_REL_PATH}
+  install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/../caffe DESTINATION ${PYTHON_LIB_REL_PATH}
           FILES_MATCHING PATTERN "*.py")
   # Caffe2 proto files
-  install(DIRECTORY ${CMAKE_BINARY_DIR}/caffe2 DESTINATION ${PYTHON_LIB_REL_PATH}
+  install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} DESTINATION ${PYTHON_LIB_REL_PATH}
           FILES_MATCHING PATTERN "*.py")
 endif()
 

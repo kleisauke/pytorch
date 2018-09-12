@@ -32,7 +32,7 @@ endif()
 # ---[ Write the macros file
 configure_file(
     ${CMAKE_CURRENT_LIST_DIR}/../caffe2/core/macros.h.in
-    ${CMAKE_BINARY_DIR}/caffe2/core/macros.h)
+    ${CMAKE_CURRENT_BINARY_DIR}/../caffe2/core/macros.h)
 
 # ---[ Installing the header files
 install(DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/../caffe2
@@ -43,7 +43,7 @@ if (BUILD_ATEN_MOBILE)
           DESTINATION include/ATen
           FILES_MATCHING PATTERN "*.h")
 endif()
-install(FILES ${CMAKE_BINARY_DIR}/caffe2/core/macros.h
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/../caffe2/core/macros.h
         DESTINATION include/caffe2/core)
 
 # ---[ ATen specific
